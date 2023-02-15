@@ -46,10 +46,10 @@ jobs:
       - run: mkdir distributions/
 
       - run: poetry run ./src/osr_dashboard/command/sync.py --config ./config/gazebo.yaml
-      - run: poetry compute ./src/osr_dashboard/command/compute.py --config ./config/gazebo.yaml
+      - run: poetry run ./src/osr_dashboard/command/compute.py --config ./config/gazebo.yaml
 
       - run: poetry run ./src/osr_dashboard/command/sync.py --config ./config/ros2.yaml
-      - run: poetry compute ./src/osr_dashboard/command/compute.py --config ./config/ros2.yaml
+      - run: poetry run ./src/osr_dashboard/command/compute.py --config ./config/ros2.yaml
 
       - run: mv *.json pages/
 
