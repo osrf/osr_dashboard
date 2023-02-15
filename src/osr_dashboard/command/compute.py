@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from typing import Dict, Any
 
 import argparse
@@ -9,11 +11,6 @@ import sys
 from osr_dashboard.distribution import get_distributions, Distribution
 from osr_dashboard.repository import Repository
 from osr_dashboard.util import existing_dir, file_or_url_type
-
-from ghapi.all import GhApi
-
-
-api = GhApi()
 
 
 def add_compute_arguments(parser: argparse.ArgumentParser):
