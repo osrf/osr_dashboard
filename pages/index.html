@@ -67,7 +67,10 @@
   }
 
   function branchFormatter(value, row) {
-      return '<a href="' + row.branch.url + '">' + row.branch.name + '</a>'
+      if (row.branch)
+        return '<a href="' + row.branch.url + '">' + row.branch.name + '</a>'
+      else
+        return "DETACHED"
   }
 
   function commitFormatter(value, row) {
@@ -86,6 +89,9 @@
   }
 
   function tagFormatter(value, row) {
+      if (row.latest_tag === undefined)
+        return "DETACHED"
+
       const options = {
         year: "numeric",
         month: "long",
@@ -100,9 +106,15 @@
   }
 
   function commitDeltaFormatter(value, row) {
+      if (row.release_delta === undefined)
+        return "DETACHED"
+
       ret = '<a href="'  + row.release_delta.url + '">' + row.release_delta.commit_count + '</a>'
       return ret
   }
+
+  function daysSinceRelease(value, row) {
+    }
 
   function diffstatFormatter(index, row) {
       console.log(row)
@@ -117,34 +129,48 @@
           field: 'name',
           title: 'Name',
           formatter: nameFormatter,
+          searchable: true,
         },
         {
           field: 'branch',
           title: 'Branch',
           formatter: branchFormatter,
+          searchable: true,
         },
         {
           field: 'latest_commit',
           title: 'Latest Commit',
-          formatter: commitFormatter
+          formatter: commitFormatter,
+          searchable: false,
         },
         {
-          field: 'release_delta.head_to_now.days',
           title: 'Days since commit',
+          searchable: false,
+          formatter: (value, row) => {
+            if (row.release_delta === undefined)
+              return "-"
+            return row.release_delta.head_to_now.days
+          }
         },
         {
           field: 'latest_tag.name',
+          searchable: false,
           title: 'Latest Tag',
           formatter: tagFormatter
         },
         {
-          field: 'release_delta.tag_to_now.days',
           title: 'Days since release',
+          searchable: false,
+          formatter: (value, row) => {
+            if (row.release_delta === undefined)
+              return "-"
+            return row.release_delta.tag_to_now.days
+          }
         },
         {
-          field: 'release_delta.commit_count',
           title: 'Commits since release',
           formatter: commitDeltaFormatter,
+          searchable: false
         },
       ]
     })

@@ -85,7 +85,7 @@ def compute_repo_stats(repo: Repository, generation_time: datetime.datetime):
             "message": clean_commit_message(commit.message),
         }
 
-    if repo.latest_tag:
+    if repo.branch is not None and repo.latest_tag:
         commit = repo.latest_tag.commit
         ret["latest_tag"] = {
             "name": repo.latest_tag.name,
@@ -105,7 +105,7 @@ def compute_repo_stats(repo: Repository, generation_time: datetime.datetime):
             "message": clean_commit_message(commit.message),
         }
 
-    if repo.head and repo.latest_tag:
+    if repo.branch is not None and repo.latest_tag:
         commits_since_tag = list(repo.repo.iter_commits(f'{repo.latest_tag}..{repo.branch}'))
         head_dt = repo.head.committed_datetime.replace(tzinfo=datetime.timezone.utc)
         tag_dt = repo.latest_tag.commit.committed_datetime.replace(tzinfo=datetime.timezone.utc)

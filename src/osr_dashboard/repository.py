@@ -82,14 +82,18 @@ class Repository:
         '''
         Get the head branch name from the repository
         '''
-        return self.repo.active_branch.name
+        try:
+            active_branch = self.repo.active_branch
+            return active_branch.name
+        except TypeError:
+            return None
 
     @property
-    def head(self) -> git.Commit:
+    def head(self) -> Optional[git.Commit]:
         '''
         Get the head commit from the repository
         '''
-        return self.repo.active_branch.commit
+        return self.repo.head.commit
 
     @property
     def latest_tag(self) -> Optional[git.TagReference]:
