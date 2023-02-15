@@ -1,0 +1,8 @@
+__pycache__
+*.pyc
+.ipynb_checkpoints
+.venv
+.mypy_cache
+*.json
+
+distributions

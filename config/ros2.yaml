@@ -1,0 +1,5 @@
+distributions:
+  humble:
+    url: https://raw.githubusercontent.com/ros2/ros2/humble/ros2.repos
+  rolling:
+    url: https://raw.githubusercontent.com/ros2/ros2/rolling/ros2.repos

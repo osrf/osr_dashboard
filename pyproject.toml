@@ -1,0 +1,88 @@
+[tool.poetry]
+name = "osr-dashboard"
+version = "0.0.1"
+description = "A dashboard for reporting OSR projects"
+authors = [
+    "Benjamin Perseghetti <bperseghetti@rudislabs.com>",
+    "Michael Carroll <mjcarroll@intrinsic.ai>",
+]
+license = "Apache-2.0"
+readme = "README.md"
+
+documentation = "https://gazebo-tooling.github.io/osr-dashboard"
+homepage = "https://gazebo-tooling.github.io/osr-dashboard"
+repository = "https://github.com/gazebo-tooling/osr-dashboard"
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Typing :: Typed",
+]
+
+packages = [
+    { include = "osr_dashboard", from = "src" }
+]
+
+[tool.poetry.dependencies]
+python = ">=3.7.1, <4.0"
+requests = "*"
+vcstool = "*"
+ghapi = "*"
+
+[tool.poetry.dev-dependencies]
+autoflake = "*"
+black = "*"
+flake8 = "*"
+flake8-bugbear = "*"
+flake8-builtins = "*"
+flake8-comprehensions = "*"
+flake8-debugger = "*"
+flake8-eradicate = "*"
+flake8-logging-format = "*"
+isort = "*"
+mkdocstrings = "*"
+mkdocs-material = "*"
+mypy = "*"
+pep8-naming = "*"
+pre-commit = "*"
+pymdown-extensions = "*"
+pytest = "*"
+pytest-github-actions-annotate-failures = "*"
+pytest-cov = "*"
+python-kacl = "*"
+pyupgrade = "*"
+tryceratops = "*"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+src_paths = ["src", "tests"]
+
+[tool.black]
+target-version = ["py37", "py38", "py39"]
+include = '\.pyi?$'
+
+[tool.pytest.ini_options]
+addopts = """\
+    --cov osr_dashboard \
+    --cov tests \
+    --cov-report term-missing \
+    --no-cov-on-fail \
+"""
+
+[tool.coverage.report]
+#fail_under = 100
+exclude_lines = [
+    'if TYPE_CHECKING:',
+    'pragma: no cover'
+]

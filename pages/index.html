@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Open Robotics Project Release Dashboard</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+  <link href="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free@5.12.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/@highlightjs/cdn-assets@10.7.2/styles/default.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hint.css@2.6.0/hint.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery/dist/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sprintf-js@1.1.2/dist/sprintf.min.js"></script>
+
+  <script src="https://unpkg.com/@highlightjs/cdn-assets@10.7.2/highlight.min.js"></script>
+  <script src="https://unpkg.com/tableexport.jquery.plugin/tableExport.min.js"></script>
+  <script src="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table.min.js"></script>
+  <script src="https://unpkg.com/bootstrap-table@1.21.2/dist/bootstrap-table-locale-all.min.js"></script>
+  <script src="https://unpkg.com/bootstrap-table@1.21.2/dist/extensions/export/bootstrap-table-export.min.js"></script>
+  <script type = "text/JavaScript" src = " https://MomentJS.com/downloads/moment.js"></script>
+
+</head>
+<body>
+
+  <div class="container">
+    <div class="row">
+      <h1 id="head"></h1>
+    </div>
+
+    <div class="row">
+      <table
+        class="table table-striped"
+        id="table"
+        data-search="true"
+        data-response-handler="responseHandler">
+      </table>
+    </div>
+    <div class="row">
+      <p id="generated">Generated on: </p>
+    </div>
+</body>
+
+<script>
+  var $table = $('#table')
+  var $head = $('#head')
+  var $generated = $('#generated')
+
+  const params = new URLSearchParams(window.location.search);
+  const distribution = params.get("distribution");
+
+  function responseHandler(res) {
+
+    const date = new Date(res.generation_time)
+
+    $head.text('Distribution Status: ' + res.name)
+    $generated.text('Generated on: ' + date)
+    return res.repos
+  }
+
+  function nameFormatter(value, row) {
+      return '<a href="' + row.url + '">' + row.name + '</a>'
+  }
+
+  function branchFormatter(value, row) {
+      return '<a href="' + row.branch.url + '">' + row.branch.name + '</a>'
+  }
+
+  function commitFormatter(value, row) {
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+     };
+
+      const date = new Date(row.latest_commit.commit_date)
+
+      ret = '<a href="' + row.latest_commit.url + '">' + row.latest_commit.SHA.slice(0,8) + '</a>'
+      ret += '<br/>' + row.latest_commit.author
+      ret += '<br/>' + date.toLocaleString('en-US', options)
+      return ret
+  }
+
+  function tagFormatter(value, row) {
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+     };
+      const date = new Date(row.latest_tag.commit_date)
+
+      ret = '<a href="' + row.latest_tag.url+ '">' + row.latest_tag.name+ '</a>'
+      ret += '<br/>' + row.latest_tag.author
+      ret += '<br/>' + date.toLocaleString('en-US', options)
+      return ret
+  }
+
+  function commitDeltaFormatter(value, row) {
+      ret = '<a href="'  + row.release_delta.url + '">' + row.release_delta.commit_count + '</a>'
+      return ret
+  }
+
+  function diffstatFormatter(index, row) {
+      console.log(row)
+      return row.release_delta.diffstat.join('<br/>');
+  }
+
+  function initTable() {
+    $table.bootstrapTable({
+      url: distribution + '.json',
+      locale: 'en-us',
+      columns: [{
+          field: 'name',
+          title: 'Name',
+          formatter: nameFormatter,
+        },
+        {
+          field: 'branch',
+          title: 'Branch',
+          formatter: branchFormatter,
+        },
+        {
+          field: 'latest_commit',
+          title: 'Latest Commit',
+          formatter: commitFormatter
+        },
+        {
+          field: 'release_delta.head_to_now.days',
+          title: 'Days since commit',
+        },
+        {
+          field: 'latest_tag.name',
+          title: 'Latest Tag',
+          formatter: tagFormatter
+        },
+        {
+          field: 'release_delta.tag_to_now.days',
+          title: 'Days since release',
+        },
+        {
+          field: 'release_delta.commit_count',
+          title: 'Commits since release',
+          formatter: commitDeltaFormatter,
+        },
+      ]
+    })
+  }
+
+  $(function() {
+    initTable()
+  })
+</script>
+</body>
+</html>
