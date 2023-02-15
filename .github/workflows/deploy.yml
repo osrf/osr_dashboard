@@ -43,7 +43,7 @@ jobs:
           key: repos-${{ hashFiles('config/*.yaml')}}
 
       - run: poetry install
-      - run: mkdir distributions/
+      - run: mkdir -p distributions/
 
       - run: poetry run ./src/osr_dashboard/command/sync.py --config ./config/gazebo.yaml
       - run: poetry run ./src/osr_dashboard/command/compute.py --config ./config/gazebo.yaml

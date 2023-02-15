@@ -59,18 +59,25 @@ def clean_commit_message(message: str):
 def compute_repo_stats(repo: Repository, generation_time: datetime.datetime):
     ret: Dict[str, Any] = {}
     ret["name"] = repo.name
-    ret["url"] = f"https://github.com/{repo.owner}/{repo.name}"
+
+    github_info = repo.github_info
+    if github_info:
+        base_url = f'https://github.com/{github_info[0]}/{github_info[1]}'
+    else:
+        base_url = None
+
+    ret["url"] = base_url
     if repo.branch:
         ret["branch"] = {
             "name": repo.branch,
-            "url": f"https://github.com/{repo.owner}/{repo.name}/tree/{repo.branch}",
+            "url": f"{base_url}/tree/{repo.branch}",
         }
 
     if repo.head:
         commit = repo.head
         ret["latest_commit"] = {
             "SHA": str(commit),
-            "url": f"https://github.com/{repo.owner}/{repo.name}/commit/{commit}",
+            "url": f"{base_url}/commit/{commit}",
             "author": str(commit.author),
             "authored_date": str(
                 commit.authored_datetime.replace(
@@ -90,7 +97,7 @@ def compute_repo_stats(repo: Repository, generation_time: datetime.datetime):
         ret["latest_tag"] = {
             "name": repo.latest_tag.name,
             "SHA": str(commit),
-            "url": f"https://github.com/{repo.owner}/{repo.name}/releases/tag/{repo.latest_tag.name}",
+            "url": f"{base_url}/releases/tag/{repo.latest_tag.name}",
             "author": str(commit.author),
             "authored_date": str(
                 commit.authored_datetime.replace(
@@ -115,7 +122,7 @@ def compute_repo_stats(repo: Repository, generation_time: datetime.datetime):
             return {"days": int(dt.days), "seconds": int(dt.seconds)}
 
         ret["release_delta"] = {
-            "url": f"https://github.com/{repo.owner}/{repo.name}/compare/{repo.latest_tag}...{repo.branch}",
+            "url": f"{base_url}/compare/{repo.latest_tag}...{repo.branch}",
             "commit_count": len(commits_since_tag),
             "tag_to_head": dt_to_json(head_dt - tag_dt),
             "tag_to_now": dt_to_json(generation_time - tag_dt),

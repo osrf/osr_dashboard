@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Tuple
 
 import os
 
@@ -48,12 +48,12 @@ class Repository:
         )
 
     @property
-    def owner(self) -> Optional[str]:
+    def github_info(self) -> Optional[Tuple[str, str]]:
         github_url = 'https://github.com/'
         if self._remote_url.find(github_url) >= 0:
             url = self._remote_url[self._remote_url.find(github_url) + len(github_url):]
-            owner = url.split('/')[0]
-            return owner
+            url = url.split('/')
+            return (url[0], url[1])
         return None
 
     @property
