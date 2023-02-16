@@ -19,9 +19,10 @@ In this example we'll use the ros2.yaml file as an example, but other `vcstool` 
 
 1. Install `poetry` (on Linux distributions, there is usually a `poetry` package).
 1. Install dependencies of this project: `poetry install`
-1. `mkdir distributions`
-1. Gather the necessary data: `poetry run ./src/osr_dashboard/command/sync.py --config ./config/ros2.yaml`
-1. Compute the necessary data: `poetry run ./src/osr_dashboard/command/compute.py --config ./config/ros2.yaml`
+1. Gather the necessary data: `poetry run sync --config ./config/ros2.yaml`
+1. Compute the necessary data: `poetry run compute --config ./config/ros2.yaml`
+1. View the result by running an http server locally: `poetry run serve`
+1. Visit http://localhost:8000?distribution=rolling
 
 ## Generating data without poetry
 
@@ -32,6 +33,5 @@ In this example we'll use the ros2.yaml file as an example, but other `vcstool` 
 
 # Viewing the result
 
-1. Copy the json from above (likely `humble.json` and `rolling.json`) to the `pages` directory
 1. Run an http server locally: `cd pages ; python3 -m http.server`
 1. Visit http://localhost:8000?distribution=rolling
