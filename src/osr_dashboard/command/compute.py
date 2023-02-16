@@ -150,6 +150,10 @@ def compute_repo_stats(repo: Repository, generation_time: datetime.datetime):
             "head_to_now": timedelta_to_json(generation_time - head_dt),
             "diffstat": diffstat.split("\n"),
         }
+
+    if repo.rosdistro_version is not None:
+        ret["rosdistro_version"] = repo.rosdistro_version
+
     return ret
 
 

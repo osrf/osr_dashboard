@@ -41,10 +41,11 @@ class Repository:
     """A single entry in a distribution"""
 
     def __init__(
-        self, local_path: str, vcs_entry: Dict[str, str], distro_root: str
+        self, local_path: str, vcs_entry: Dict[str, str], distro_root: str, rosdistro_version: Optional[str]
     ) -> None:
         self._local_path: str = local_path
-        self._distro_root = distro_root
+        self._distro_root: str = distro_root
+        self._rosdistro_version: Optional[str] = rosdistro_version
 
         self._type: str = vcs_entry["type"]
         self._remote_url: str = vcs_entry["url"]
@@ -119,6 +120,13 @@ class Repository:
         if len(tags) != 0:
             return tags[0]
         return None
+
+    @property
+    def rosdistro_version(self) -> Optional[str]:
+        """
+        Get the rosdistro version, if any
+        """
+        return self._rosdistro_version
 
     def import_job(self, shallow: bool = False, recursive: bool = False):
         """

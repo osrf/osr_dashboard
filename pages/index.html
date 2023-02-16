@@ -138,6 +138,7 @@
           searchable: false,
         },
         {
+          field: 'days_since_commit',
           title: 'Days since commit',
           searchable: false,
           formatter: (value, row) => {
@@ -147,6 +148,7 @@
           }
         },
         {
+          field: 'days_since_release',
           title: 'Days since release',
           searchable: false,
           formatter: (value, row) => {
@@ -156,15 +158,36 @@
           }
         },
         {
+          field: 'commits_since_release',
           title: 'Commits since release',
           formatter: commitDeltaFormatter,
           searchable: false
         },
         {
-          field: 'latest_tag.name',
+          field: 'latest_source_tag',
           searchable: false,
           title: 'Latest Source Tag',
           formatter: tagFormatter
+        },
+        {
+          field: 'latest_rosdistro_tag',
+          title: 'Latest rosdistro Tag',
+          searchable: false,
+          formatter: (value, row) => {
+            // This is a little subtle, but if rosdistro_version is undefined,
+            // we assume that there is no rosdistro_version for the entire
+            // table and hide the column.  If the rosdistro_version is the
+            // empty string, we just assume that this package has no rosdistro
+            // released version.
+            // This isn't quite right, but was the only thing I could figure out
+            // without fetching and parsing the JSON twice.
+            if (row.rosdistro_version === undefined) {
+              $table.bootstrapTable('hideColumn', 'latest_rosdistro_tag')
+              return ""
+            }
+
+            return row.rosdistro_version.split("-")[0]
+          }
         },
       ]
     })
