@@ -54,7 +54,6 @@
   const distribution = params.get("distribution");
 
   function responseHandler(res) {
-
     const date = new Date(res.generation_time)
 
     $head.text('Distribution Status: ' + res.name)
@@ -63,62 +62,57 @@
   }
 
   function nameFormatter(value, row) {
-      return '<a href="' + row.url + '">' + row.name + '</a>'
+    return '<a href="' + row.url + '">' + row.name + '</a>'
   }
 
   function branchFormatter(value, row) {
-      if (row.branch)
-        return '<a href="' + row.branch.url + '">' + row.branch.name + '</a>'
-      else
-        return "DETACHED"
+    if (row.branch) {
+      return '<a href="' + row.branch.url + '">' + row.branch.name + '</a>'
+    } else {
+      return "DETACHED"
+    }
   }
 
   function commitFormatter(value, row) {
-      const options = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-     };
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+   };
 
-      const date = new Date(row.latest_commit.commit_date)
+    const date = new Date(row.latest_commit.commit_date)
 
-      ret = '<a href="' + row.latest_commit.url + '">' + row.latest_commit.SHA.slice(0,8) + '</a>'
-      ret += '<br/>' + row.latest_commit.author
-      ret += '<br/>' + date.toLocaleString('en-US', options)
-      return ret
+    ret = '<a href="' + row.latest_commit.url + '">' + row.latest_commit.SHA.slice(0,8) + '</a>'
+    ret += '<br/>' + row.latest_commit.author
+    ret += '<br/>' + date.toLocaleString('en-US', options)
+    return ret
   }
 
   function tagFormatter(value, row) {
-      if (row.latest_tag === undefined)
-        return "DETACHED"
+    if (row.latest_tag === undefined) {
+      return "DETACHED"
+    }
 
-      const options = {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-     };
-      const date = new Date(row.latest_tag.commit_date)
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    };
+    const date = new Date(row.latest_tag.commit_date)
 
-      ret = '<a href="' + row.latest_tag.url+ '">' + row.latest_tag.name+ '</a>'
-      ret += '<br/>' + row.latest_tag.author
-      ret += '<br/>' + date.toLocaleString('en-US', options)
-      return ret
+    ret = '<a href="' + row.latest_tag.url+ '">' + row.latest_tag.name+ '</a>'
+    ret += '<br/>' + row.latest_tag.author
+    ret += '<br/>' + date.toLocaleString('en-US', options)
+    return ret
   }
 
   function commitDeltaFormatter(value, row) {
-      if (row.release_delta === undefined)
-        return "DETACHED"
-
-      ret = '<a href="'  + row.release_delta.url + '">' + row.release_delta.commit_count + '</a>'
-      return ret
-  }
-
-  function daysSinceRelease(value, row) {
+    if (row.release_delta === undefined) {
+      return "DETACHED"
     }
 
-  function diffstatFormatter(index, row) {
-      console.log(row)
-      return row.release_delta.diffstat.join('<br/>');
+    ret = '<a href="'  + row.release_delta.url + '">' + row.release_delta.commit_count + '</a>'
+    return ret
   }
 
   function initTable() {
