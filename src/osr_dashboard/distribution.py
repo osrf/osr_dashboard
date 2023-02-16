@@ -1,13 +1,12 @@
-from typing import List, Dict
-
 import os
+from typing import Dict, List
+
 import yaml
-
-from osr_dashboard.util import resolve_uri
-from osr_dashboard.repository import Repository
-
-from vcstool.commands.import_ import get_repositories, add_dependencies
+from vcstool.commands.import_ import add_dependencies, get_repositories
 from vcstool.executor import execute_jobs, output_results
+
+from osr_dashboard.repository import Repository
+from osr_dashboard.util import resolve_uri
 
 
 class Distribution:
@@ -27,7 +26,9 @@ class Distribution:
 
         for local_path, entry in config.items():
             self.repos[local_path] = Repository(
-                local_path=local_path, vcs_entry=entry, distro_root=self.path,
+                local_path=local_path,
+                vcs_entry=entry,
+                distro_root=self.path,
             )
 
     @property

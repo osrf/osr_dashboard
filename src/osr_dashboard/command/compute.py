@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
-from typing import Dict, Any
-
 import argparse
 import datetime
 import json
 import os
 import sys
+from typing import Any, Dict, List
 
-from osr_dashboard.distribution import get_distributions, Distribution
+from osr_dashboard.distribution import Distribution, get_distributions
 from osr_dashboard.repository import Repository
 from osr_dashboard.util import existing_dir, file_or_url_type
 
@@ -46,23 +45,38 @@ def add_compute_arguments(parser: argparse.ArgumentParser):
     )
 
 
-def clean_commit_message(message: str):
+def clean_commit_message(message: str | bytes) -> List[str]:
+    """
+    Turn a commit message into a series of lines
+    """
+    if isinstance(message, bytes):
+        message = message.decode()
     ret = []
-    lines = message.split('\n')
+    lines = message.split("\n")
     for line in lines:
-        line = line.strip('\r')
+        line = line.strip("\r")
         if len(line) > 0:
             ret.append(line)
     return ret
 
 
+def timedelta_to_json(delta: datetime.timedelta) -> Dict[str, int]:
+    """
+    Convert a python timedelta into something for json
+    """
+    return {"days": int(delta.days), "seconds": int(delta.seconds)}
+
+
 def compute_repo_stats(repo: Repository, generation_time: datetime.datetime):
+    """
+    Generate a dictionary of repository properties
+    """
     ret: Dict[str, Any] = {}
     ret["name"] = repo.name
 
     github_info = repo.github_info
     if github_info:
-        base_url = f'https://github.com/{github_info[0]}/{github_info[1]}'
+        base_url = f"https://github.com/{github_info[0]}/{github_info[1]}"
     else:
         base_url = None
 
@@ -112,34 +126,38 @@ def compute_repo_stats(repo: Repository, generation_time: datetime.datetime):
             "message": clean_commit_message(commit.message),
         }
 
-    if repo.branch is not None and repo.latest_tag:
-        commits_since_tag = list(repo.repo.iter_commits(f'{repo.latest_tag}..{repo.branch}'))
+    if repo.branch is not None and repo.head is not None and repo.latest_tag:
+        commits_since_tag = list(
+            repo.repo.iter_commits(f"{repo.latest_tag}..{repo.branch}")
+        )
         head_dt = repo.head.committed_datetime.replace(tzinfo=datetime.timezone.utc)
-        tag_dt = repo.latest_tag.commit.committed_datetime.replace(tzinfo=datetime.timezone.utc)
+        tag_dt = repo.latest_tag.commit.committed_datetime.replace(
+            tzinfo=datetime.timezone.utc
+        )
         diffstat = repo.repo.git.diff(repo.latest_tag, repo.head, stat=True)
-
-        def dt_to_json(dt):
-            return {"days": int(dt.days), "seconds": int(dt.seconds)}
 
         ret["release_delta"] = {
             "url": f"{base_url}/compare/{repo.latest_tag}...{repo.branch}",
             "commit_count": len(commits_since_tag),
-            "tag_to_head": dt_to_json(head_dt - tag_dt),
-            "tag_to_now": dt_to_json(generation_time - tag_dt),
-            "head_to_now": dt_to_json(generation_time - head_dt),
-            "diffstat": diffstat.split('\n'),
+            "tag_to_head": timedelta_to_json(head_dt - tag_dt),
+            "tag_to_now": timedelta_to_json(generation_time - tag_dt),
+            "head_to_now": timedelta_to_json(generation_time - head_dt),
+            "diffstat": diffstat.split("\n"),
         }
     return ret
 
 
-def compute_distro_stats(distro: Distribution):
-    ret = {}
+def compute_distro_stats(distro: Distribution) -> Dict[str, Any]:
+    """
+    Generate a dictionary of distribution properties
+    """
+    ret: Dict[str, Any] = {}
     now = datetime.datetime.now(datetime.timezone.utc)
     ret["name"] = distro.name
     ret["url"] = distro.url
     ret["generation_time"] = now.isoformat()
     ret["repos"] = []
-    for repo_name, repo in distro.repos.items():
+    for repo in distro.repos.values():
         ret["repos"].append(compute_repo_stats(repo, now))
     return ret
 
@@ -159,7 +177,7 @@ def compute(args=None) -> int:
 
     for distro in distributions:
         distro.cache_dir = args.path
-        with open(f'{distro.name}.json', 'w', encoding='utf8') as json_out:
+        with open(f"{distro.name}.json", "w", encoding="utf8") as json_out:
             json.dump(compute_distro_stats(distro), json_out, indent=4)
     return 0
 
