@@ -12,7 +12,7 @@ from osr_dashboard.util import resolve_uri
 class Distribution:
     """Class for keeping track of a software distribution"""
 
-    def __init__(self, name: str, url: str, cache_root: str = "") -> None:
+    def __init__(self, name: str, url: str, cache_root: str) -> None:
         self.name: str = name
         self.url: str = url
         self._cache_dir = (
@@ -39,10 +39,6 @@ class Distribution:
     def cache_dir(self) -> str:
         return self._cache_dir
 
-    @cache_dir.setter
-    def cache_dir(self, value: str) -> None:
-        self._cache_dir = value
-
     def import_(self, workers: int = 4, debug: bool = False) -> bool:
         jobs = []
         for repo in self.repos.values():
@@ -56,7 +52,7 @@ class Distribution:
         return not any_error
 
 
-def _parse_distributions(yaml_file) -> List[Distribution]:
+def _parse_distributions(yaml_file, cache_root: str) -> List[Distribution]:
     """
     Parse distributions from a yaml file
     """
@@ -68,19 +64,19 @@ def _parse_distributions(yaml_file) -> List[Distribution]:
     try:
         ret = []
         for distro_name, values in root["distributions"].items():
-            ret.append(Distribution(distro_name, values["url"]))
+            ret.append(Distribution(distro_name, values["url"], cache_root))
         return ret
     except KeyError as ex:
         raise RuntimeError(f"Input data is not valid format: {ex}") from ex
 
 
-def get_distributions(uri) -> List[Distribution]:
+def get_distributions(uri, cache_root: str) -> List[Distribution]:
     """
     Retrieve a list of distributions from a file or URL
     """
     uri = resolve_uri(uri)
     try:
-        distributions = _parse_distributions(uri)
+        distributions = _parse_distributions(uri, cache_root)
         return distributions
     except (yaml.YAMLError, KeyError) as ex:
         raise RuntimeError("Input data in not valid YAML format: {ex}") from ex

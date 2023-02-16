@@ -33,10 +33,11 @@ def add_sync_arguments(parser: argparse.ArgumentParser):
         help="Configuration to parse distribution from",
     )
     group.add_argument(
-        "--path",
+        "--distro-path",
         nargs="?",
         type=existing_dir,
         default=os.path.join(os.curdir, "distributions"),
+        help="Location of the distribution cache path",
     )
 
 
@@ -51,10 +52,10 @@ def sync(args=None) -> int:
     add_sync_arguments(parser)
     args = parser.parse_args(args)
 
-    distributions = get_distributions(args.config)
+    os.makedirs(args.distro_path, exist_ok=True)
+    distributions = get_distributions(args.config, args.distro_path)
 
     for distro in distributions:
-        distro.cache_dir = args.path
         if not distro.import_():
             print(f"Error importing {distro.name}")
     return 0

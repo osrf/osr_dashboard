@@ -60,6 +60,11 @@ python-kacl = "*"
 pyupgrade = "*"
 tryceratops = "*"
 
+[tool.poetry.scripts]
+sync = 'osr_dashboard.command.sync:sync'
+compute= 'osr_dashboard.command.compute:compute'
+
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
