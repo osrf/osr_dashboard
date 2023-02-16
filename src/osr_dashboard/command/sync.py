@@ -4,7 +4,7 @@ import os
 import sys
 
 from osr_dashboard.distribution import get_distributions
-from osr_dashboard.util import file_or_url_type, existing_dir
+from osr_dashboard.util import existing_dir, file_or_url_type
 
 
 def add_sync_arguments(parser: argparse.ArgumentParser):

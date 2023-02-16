@@ -24,14 +24,15 @@ def file_or_url_type(value):
     # use another user agent to avoid getting a 403 (forbidden) error,
     # since some websites blacklist or block unrecognized user agents
     return request.Request(
-        value, headers={"User-Agent": f"osr-dashboard/{dashboard_version}"})
+        value, headers={"User-Agent": f"osr-dashboard/{dashboard_version}"}
+    )
 
 
 def existing_dir(path):
-    '''
+    """
     Function to check if a directory is existing for argparse
 
-    '''
+    """
     if not os.path.exists(path):
         raise argparse.ArgumentTypeError(f"Path '{path}' does not exist.")
     if not os.path.isdir(path):

@@ -30,19 +30,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-      - uses: Gr1N/setup-poetry@v8
-      - uses: actions/cache@v2
-        with:
-          path: ~/.cache/pypoetry/virtualenvs
-          key: poetry-${{ hashFiles('poetry.lock')}}
+      - uses: ./.github/actions/python-poetry-env
 
-      - uses: actions/cache@v2
-        with:
-          path: ./distributions
-          key: repos-${{ hashFiles('config/*.yaml')}}
-
-      - run: poetry install
       - run: mkdir -p distributions/
 
       - run: poetry run ./src/osr_dashboard/command/sync.py --config ./config/gazebo.yaml
@@ -51,14 +40,16 @@ jobs:
       - run: poetry run ./src/osr_dashboard/command/sync.py --config ./config/ros2.yaml
       - run: poetry run ./src/osr_dashboard/command/compute.py --config ./config/ros2.yaml
 
-      - run: mv *.json pages/
+      - run: mv ./*.json ./pages/
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
           path: 'pages'
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
