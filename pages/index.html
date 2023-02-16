@@ -147,12 +147,6 @@
           }
         },
         {
-          field: 'latest_tag.name',
-          searchable: false,
-          title: 'Latest Tag',
-          formatter: tagFormatter
-        },
-        {
           title: 'Days since release',
           searchable: false,
           formatter: (value, row) => {
@@ -165,6 +159,12 @@
           title: 'Commits since release',
           formatter: commitDeltaFormatter,
           searchable: false
+        },
+        {
+          field: 'latest_tag.name',
+          searchable: false,
+          title: 'Latest Source Tag',
+          formatter: tagFormatter
         },
       ]
     })
