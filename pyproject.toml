@@ -62,8 +62,8 @@ tryceratops = "*"
 
 [tool.poetry.scripts]
 sync = 'osr_dashboard.command.sync:sync'
-compute= 'osr_dashboard.command.compute:compute'
-
+compute = 'osr_dashboard.command.compute:compute'
+serve = 'osr_dashboard.command.serve:serve'
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
