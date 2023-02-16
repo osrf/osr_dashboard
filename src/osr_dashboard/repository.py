@@ -62,7 +62,13 @@ class Repository:
             url_end = self._remote_url.find(github_url) + len(github_url)
             url = self._remote_url[url_end:]
             url_tuple = url.split("/")
-            return (url_tuple[0], url_tuple[1])
+            repo_owner = url_tuple[0]
+            repo_name = url_tuple[1]
+
+            dot_git = repo_name.find(".git")
+            if dot_git:
+                repo_name = repo_name[:dot_git]
+            return (repo_owner, repo_name)
         return None
 
     @property
