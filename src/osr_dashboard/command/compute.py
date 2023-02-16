@@ -38,10 +38,16 @@ def add_compute_arguments(parser: argparse.ArgumentParser):
         help="Configuration to parse distribution from",
     )
     group.add_argument(
-        "--path",
+        "--output-dir",
+        default=os.path.join(os.curdir, "pages"),
+        help="Output path for generated json files",
+    )
+    group.add_argument(
+        "--distro-path",
         nargs="?",
         type=existing_dir,
         default=os.path.join(os.curdir, "distributions"),
+        help="Location of the distribution cache path",
     )
 
 
@@ -173,11 +179,13 @@ def compute(args=None) -> int:
     add_compute_arguments(parser)
     args = parser.parse_args(args)
 
-    distributions = get_distributions(args.config)
+    os.makedirs(args.output_dir, exist_ok=True)
+    distributions = get_distributions(args.config, args.distro_path)
 
     for distro in distributions:
-        distro.cache_dir = args.path
-        with open(f"{distro.name}.json", "w", encoding="utf8") as json_out:
+        with open(
+            f"{args.output_dir}/{distro.name}.json", "w", encoding="utf8"
+        ) as json_out:
             json.dump(compute_distro_stats(distro), json_out, indent=4)
     return 0
 

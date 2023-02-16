@@ -36,15 +36,10 @@ jobs:
         uses: actions/checkout@v3
       - uses: ./.github/actions/python-poetry-env
 
-      - run: mkdir -p distributions/
-
-      - run: poetry run ./src/osr_dashboard/command/sync.py --config ./config/gazebo.yaml
-      - run: poetry run ./src/osr_dashboard/command/compute.py --config ./config/gazebo.yaml
-
-      - run: poetry run ./src/osr_dashboard/command/sync.py --config ./config/ros2.yaml
-      - run: poetry run ./src/osr_dashboard/command/compute.py --config ./config/ros2.yaml
-
-      - run: mv ./*.json ./pages/
+      - run: poetry run sync --config ./config/gazebo.yaml
+      - run: poetry run compute --config ./config/gazebo.yaml
+      - run: poetry run sync --config ./config/ros2.yaml
+      - run: poetry run compute --config ./config/ros2.yaml
 
       - name: Setup Pages
         uses: actions/configure-pages@v3
