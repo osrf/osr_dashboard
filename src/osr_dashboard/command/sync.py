@@ -4,7 +4,7 @@ import os
 import sys
 
 from osr_dashboard.distribution import get_distributions
-from osr_dashboard.util import existing_dir, file_or_url_type
+from osr_dashboard.util import file_or_url_type
 
 
 def add_sync_arguments(parser: argparse.ArgumentParser):
@@ -35,7 +35,6 @@ def add_sync_arguments(parser: argparse.ArgumentParser):
     group.add_argument(
         "--distro-path",
         nargs="?",
-        type=existing_dir,
         default=os.path.join(os.curdir, "distributions"),
         help="Location of the distribution cache path",
     )
