@@ -150,6 +150,10 @@ def compute_repo_stats(repo: Repository, generation_time: datetime.datetime):
             "head_to_now": timedelta_to_json(generation_time - head_dt),
             "diffstat": diffstat.split("\n"),
         }
+
+    if repo.rosdistro_version is not None:
+        ret["rosdistro_version"] = repo.rosdistro_version
+
     return ret
 
 
@@ -162,6 +166,7 @@ def compute_distro_stats(distro: Distribution) -> Dict[str, Any]:
     ret["name"] = distro.name
     ret["url"] = distro.url
     ret["generation_time"] = now.isoformat()
+    ret["has_rosdistro_data"] = distro.rosdistro_url is not None
     ret["repos"] = []
     for repo in distro.repos.values():
         ret["repos"].append(compute_repo_stats(repo, now))

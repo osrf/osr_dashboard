@@ -30,11 +30,9 @@ def file_or_url_type(value):
 
 def existing_dir(path):
     """
-    Function to check if a directory is existing for argparse
-
+    Function to check if a given path is a directory for argparse
     """
-    if not os.path.exists(path):
-        raise argparse.ArgumentTypeError(f"Path '{path}' does not exist.")
-    if not os.path.isdir(path):
+    if os.path.exists(path) and not os.path.isdir(path):
         raise argparse.ArgumentTypeError(f"Path '{path}' is not a directory.")
+    # implicitly, we allow the path to not exist; we assume something later on will create it
     return path
