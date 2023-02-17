@@ -58,6 +58,11 @@
 
     $head.text('Distribution Status: ' + res.name)
     $generated.text('Generated on: ' + date)
+
+    if (!res.has_rosdistro_data) {
+      $table.bootstrapTable('hideColumn', 'latest_rosdistro_tag')
+    }
+
     return res.repos
   }
 
@@ -174,15 +179,7 @@
           title: 'Latest rosdistro Tag',
           searchable: false,
           formatter: (value, row) => {
-            // This is a little subtle, but if rosdistro_version is undefined,
-            // we assume that there is no rosdistro_version for the entire
-            // table and hide the column.  If the rosdistro_version is the
-            // empty string, we just assume that this package has no rosdistro
-            // released version.
-            // This isn't quite right, but was the only thing I could figure out
-            // without fetching and parsing the JSON twice.
             if (row.rosdistro_version === undefined) {
-              $table.bootstrapTable('hideColumn', 'latest_rosdistro_tag')
               return ""
             }
 

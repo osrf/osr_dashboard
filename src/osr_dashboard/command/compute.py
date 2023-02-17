@@ -166,6 +166,7 @@ def compute_distro_stats(distro: Distribution) -> Dict[str, Any]:
     ret["name"] = distro.name
     ret["url"] = distro.url
     ret["generation_time"] = now.isoformat()
+    ret["has_rosdistro_data"] = distro.rosdistro_url is not None
     ret["repos"] = []
     for repo in distro.repos.values():
         ret["repos"].append(compute_repo_stats(repo, now))
