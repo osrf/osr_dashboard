@@ -2,7 +2,6 @@ import os
 from typing import Dict, List
 
 import requests
-
 import yaml
 from vcstool.commands.import_ import add_dependencies, get_repositories
 from vcstool.executor import execute_jobs, output_results
