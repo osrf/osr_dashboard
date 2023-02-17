@@ -34,5 +34,5 @@ def existing_dir(path):
     """
     if os.path.exists(path) and not os.path.isdir(path):
         raise argparse.ArgumentTypeError(f"Path '{path}' is not a directory.")
-    # implicitly, we allow the path to not exist; we assume something later one will create it
+    # implicitly, we allow the path to not exist; we assume something later on will create it
     return path
