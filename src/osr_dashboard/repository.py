@@ -41,7 +41,11 @@ class Repository:
     """A single entry in a distribution"""
 
     def __init__(
-        self, local_path: str, vcs_entry: Dict[str, str], distro_root: str, rosdistro_version: Optional[str]
+        self,
+        local_path: str,
+        vcs_entry: Dict[str, str],
+        distro_root: str,
+        rosdistro_version: Optional[str],
     ) -> None:
         self._local_path: str = local_path
         self._distro_root: str = distro_root
