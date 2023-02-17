@@ -3,11 +3,4 @@ distributions:
     url: https://raw.githubusercontent.com/ros2/ros2/humble/ros2.repos
   rolling:
     url: https://raw.githubusercontent.com/ros2/ros2/rolling/ros2.repos
-    rosdistro:
-      url: https://raw.githubusercontent.com/ros/rosdistro/master/rolling/distribution.yaml
-      ros2_repos_to_rosdistro_name_map:
-        Fast-CDR: fastcdr
-        Fast-DDS: fastrtps
-        gz_cmake2_vendor: ignition_cmake2_vendor
-        gz_math6_vendor: ignition_math6_vendor
-        ros_tutorials: turtlesim
+    rosdistro_url: https://raw.githubusercontent.com/ros/rosdistro/master/rolling/distribution.yaml

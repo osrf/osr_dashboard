@@ -13,30 +13,16 @@ from osr_dashboard.util import resolve_uri
 class Distribution:
     """Class for keeping track of a software distribution"""
 
-    def get_rosdistro_version(self, rosdistro_repo_data):
-        rosdistro_version = ""
-
-        if "release" in rosdistro_repo_data:
-            rosdistro_release_data = rosdistro_repo_data["release"]
-            if "version" in rosdistro_release_data:
-                rosdistro_version = rosdistro_release_data["version"]
-
-        return rosdistro_version
-
     def __init__(
         self,
         name: str,
         url: str,
         rosdistro_url: str,
-        ros2_repos_to_rosdistro_name_map: Dict[str, str],
         cache_root: str,
     ) -> None:
         self.name: str = name
         self.url: str = url
         self.rosdistro_url: str = rosdistro_url
-        self.ros2_repos_to_rosdistro_name_map: Dict[
-            str, str
-        ] = ros2_repos_to_rosdistro_name_map
         self._cache_dir = (
             os.path.join(os.path.curdir, "distributions")
             if cache_root == ""
@@ -46,6 +32,7 @@ class Distribution:
         self.repos: Dict[str, Repository] = {}
         config = get_repositories(resolve_uri(url))
 
+        rosdistro_url_to_version = {}
         if self.rosdistro_url is not None:
             response = requests.get(self.rosdistro_url)
             if response.status_code != 200:
@@ -60,25 +47,32 @@ class Distribution:
                     f"rosdistro data from {self.rosdistro_url} is not valid yaml format: {ex}"
                 ) from ex
 
+            for repo_name, repo in rosdistro_yaml["repositories"].items():
+                if "source" not in repo:
+                    # No source entry, no key to add
+                    continue
+
+                if "url" not in repo["source"]:
+                    # No source URL, no key to add
+                    continue
+
+                if "release" not in repo:
+                    # No release entry, no value to add
+                    continue
+
+                if "version" not in repo["release"]:
+                    # No version, no value to add
+                    continue
+
+                source_url = repo["source"]["url"]
+                version = repo["release"]["version"]
+
+                rosdistro_url_to_version[source_url] = version
+
         for local_path, entry in config.items():
             rosdistro_version = None
             if self.rosdistro_url is not None:
-                # If we have a rosdistro_url, make sure that all repositories can be resolved in it
-                repo_name_only = local_path.split("/")[-1]
-                if repo_name_only in rosdistro_yaml["repositories"]:
-                    rosdistro_version = self.get_rosdistro_version(
-                        rosdistro_yaml["repositories"][repo_name_only]
-                    )
-                else:
-                    if repo_name_only not in self.ros2_repos_to_rosdistro_name_map:
-                        raise RuntimeError(
-                            f"Could not find ros2 repository {repo_name_only} in rosdistro or in the map"
-                        )
-
-                    alt_name = self.ros2_repos_to_rosdistro_name_map[repo_name_only]
-                    rosdistro_version = self.get_rosdistro_version(
-                        rosdistro_yaml["repositories"][alt_name]
-                    )
+                rosdistro_version = rosdistro_url_to_version.get(entry["url"], "")
 
             self.repos[local_path] = Repository(
                 local_path=local_path,
@@ -120,26 +114,11 @@ def _parse_distributions(yaml_file, cache_root: str) -> List[Distribution]:
     try:
         ret = []
         for distro_name, values in root["distributions"].items():
-            ros2_repos_to_rosdistro_name_map = {}
-            rosdistro_url = None
-            if "rosdistro" in values:
-                if "url" not in values["rosdistro"]:
-                    raise RuntimeError(
-                        "rosdistro section specified, but no 'url' given"
-                    )
-                rosdistro_url = values["rosdistro"]["url"]
-
-                if "ros2_repos_to_rosdistro_name_map" in values["rosdistro"]:
-                    ros2_repos_to_rosdistro_name_map = values["rosdistro"][
-                        "ros2_repos_to_rosdistro_name_map"
-                    ]
-
             ret.append(
                 Distribution(
                     distro_name,
                     values["url"],
-                    rosdistro_url,
-                    ros2_repos_to_rosdistro_name_map,
+                    values.get("rosdistro_url", None),
                     cache_root,
                 )
             )

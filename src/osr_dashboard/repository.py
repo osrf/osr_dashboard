@@ -60,7 +60,7 @@ class Repository:
     @property
     def github_info(self) -> Optional[Tuple[str, str]]:
         """
-        Get the github owner/name infor for this repository
+        Get the github owner/name information for this repository
         """
         github_url = "https://github.com/"
         if self._remote_url.find(github_url) >= 0:
