@@ -47,27 +47,17 @@ class Distribution:
                     f"rosdistro data from {self.rosdistro_url} is not valid yaml format: {ex}"
                 ) from ex
 
-            for repo_name, repo in rosdistro_yaml["repositories"].items():
-                if "source" not in repo:
+            for repo in rosdistro_yaml["repositories"].values():
+                if "source" not in repo or "url" not in repo["source"]:
                     # No source entry, no key to add
                     continue
 
-                if "url" not in repo["source"]:
-                    # No source URL, no key to add
-                    continue
-
-                if "release" not in repo:
+                if "release" not in repo or "version" not in repo["release"]:
                     # No release entry, no value to add
                     continue
 
-                if "version" not in repo["release"]:
-                    # No version, no value to add
-                    continue
-
                 source_url = repo["source"]["url"]
-                version = repo["release"]["version"]
-
-                rosdistro_url_to_version[source_url] = version
+                rosdistro_url_to_version[source_url] = repo["release"]["version"]
 
         for local_path, entry in config.items():
             rosdistro_version = None
