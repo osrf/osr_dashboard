@@ -71,7 +71,7 @@ class Repository:
             repo_name = url_tuple[1]
 
             dot_git = repo_name.find(".git")
-            if dot_git:
+            if dot_git >= 0:
                 repo_name = repo_name[:dot_git]
             return (repo_owner, repo_name)
         return None
