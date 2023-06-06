@@ -125,8 +125,73 @@
     return ret
   }
 
+  function changeDeltaFormatter(value, row) {
+    if (row.release_delta === undefined) {
+      return "DETACHED"
+    }
+
+    if (row.release_delta.shortstat.files_changed  == 0 &&
+        row.release_delta.shortstat.insertions == 0 &&
+        row.release_delta.shortstat.deletions == 0
+      )
+      return
+
+    tooltip = ""
+    tooltip += '<tr>' +
+          '<th>Filename</th>' +
+          '<th>Lines Added</th>' +
+          '<th>Lines Removed</th>' +
+          '</tr>'
+    row.release_delta.numstat.forEach((value, index) => {
+        tooltip += '<tr>' +
+          '<td>' + value.filename + '</td>' +
+          '<td>' + value.lines_added + '</td>' +
+          '<td>' + value.lines_removed + '</td>' +
+          '</tr>'
+    });
+
+    name = row.name.replace('-', '_')
+
+
+    ret = ''
+    ret += '<span>' + row.release_delta.shortstat.files_changed + ' files changed</span><br/>'
+    ret += '<span style="color: green">' + row.release_delta.shortstat.insertions+ ' insertions(+)</span><br/>'
+    ret += '<span style="color: red">' + row.release_delta.shortstat.deletions+ ' deletions(-)</span>'
+
+ret += '<div class="modal" tabindex="-1" role="dialog" id="modal_' + name + '">' +
+'  <div class="modal-dialog modal-lg" role="document">' +
+'    <div class="modal-content">' +
+'      <div class="modal-header">' +
+'        <h5 class="modal-title">Modal title</h5>' +
+'        <button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+'          <span aria-hidden="true">&times;</span>' +
+'        </button>' +
+'      </div>' +
+ '      <div class="modal-body"><div class="container-fluid">' +
+'        <table>' +
+    tooltip +
+ '        </table></div>' +
+'      </div>' +
+'      <div class="modal-footer">' +
+'        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>' +
+'      </div>' +
+'    </div>' +
+'  </div>' +
+'</div>'
+
+    ret += '<br/><button type="button" class="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#modal_' + name +'">'
+    ret += 'Diffstat'
+    ret += '</button>'
+
+    return ret
+  }
+
   function initTable() {
     $table.bootstrapTable({
+      onLoadSuccess: function(data) {
+        console.log($('[data-toggle="popover"]'))
+        $('[data-toggle="popover"]').popover()
+      },
       url: distribution + '.json',
       locale: 'en-us',
       columns: [{
@@ -171,6 +236,12 @@
           field: 'commits_since_release',
           title: 'Commits since release',
           formatter: commitDeltaFormatter,
+          searchable: false
+        },
+        {
+          field: 'changes_since_release',
+          title: 'Changes since release',
+          formatter: changeDeltaFormatter,
           searchable: false
         },
         {

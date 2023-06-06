@@ -4,6 +4,7 @@ import argparse
 import datetime
 import json
 import os
+import re
 import sys
 from typing import Any, Dict, List
 
@@ -140,7 +141,29 @@ def compute_repo_stats(repo: Repository, generation_time: datetime.datetime):
         tag_dt = repo.latest_tag.commit.committed_datetime.replace(
             tzinfo=datetime.timezone.utc
         )
-        diffstat = repo.repo.git.diff(repo.latest_tag, repo.head, stat=True)
+        shortstat = repo.repo.git.diff(repo.latest_tag, repo.head, shortstat=True)
+        numstat = repo.repo.git.diff(repo.latest_tag, repo.head, numstat=True)
+
+        numstat_entries = []
+        for line in numstat.split("\n"):
+            if line:
+                entry = line.split("\t")
+                numstat_entries.append(
+                    {
+                        "filename": entry[2],
+                        "lines_added": entry[0],
+                        "lines_removed": entry[1],
+                    }
+                )
+
+        match = re.search(r"(\d+) files changed", shortstat)
+        files_changed = match.groups()[0] if match else 0
+
+        match = re.search(r"(\d+) insertions", shortstat)
+        insertions = match.groups()[0] if match else 0
+
+        match = re.search(r"(\d+) deletions", shortstat)
+        deletions = match.groups()[0] if match else 0
 
         ret["release_delta"] = {
             "url": f"{base_url}/compare/{repo.latest_tag}...{repo.branch}",
@@ -148,7 +171,12 @@ def compute_repo_stats(repo: Repository, generation_time: datetime.datetime):
             "tag_to_head": timedelta_to_json(head_dt - tag_dt),
             "tag_to_now": timedelta_to_json(generation_time - tag_dt),
             "head_to_now": timedelta_to_json(generation_time - head_dt),
-            "diffstat": diffstat.split("\n"),
+            "numstat": numstat_entries,
+            "shortstat": {
+                "files_changed": files_changed,
+                "insertions": insertions,
+                "deletions": deletions,
+            },
         }
 
     if repo.rosdistro_version is not None:
