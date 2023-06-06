@@ -154,7 +154,7 @@
     });
 
     name = row.name.replace('-', '_')
-
+    name = name.replace('/', '_')
 
     ret = ''
     ret += '<span>' + row.release_delta.shortstat.files_changed + ' files changed</span><br/>'
