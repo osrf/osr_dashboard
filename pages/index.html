@@ -4,7 +4,7 @@
 <head>
   <title>Open Robotics Project Release Dashboard</title>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/bootstrap-table.min.css">
@@ -39,9 +39,11 @@
 
     <div class="row">
       <table
-        class="table table-striped"
+        class="table table-striped table-sm"
         id="table"
+        data-show-columns="true"
         data-search="true"
+        data-advanced-search="true"
         data-response-handler="responseHandler">
       </table>
     </div>
@@ -199,44 +201,78 @@ ret += '<div class="modal" tabindex="-1" role="dialog" id="modal_' + name + '">'
           title: 'Name',
           formatter: nameFormatter,
           searchable: true,
+          switchable: false,
+          sortable: true,
         },
         {
           field: 'branch',
           title: 'Branch',
           formatter: branchFormatter,
           searchable: true,
+          switchable: true,
+          sortable: true,
         },
         {
           field: 'latest_commit',
           title: 'Latest Commit',
           formatter: commitFormatter,
           searchable: false,
+          switchable: true,
+          sortable: true,
+          sorter:  (colA, colB) => {
+              const commitA_date = new Date(colA.commit_date)
+              const commitB_date = new Date(colB.commit_date)
+              return commitA_date - commitB_date;
+            },
         },
         {
           field: 'days_since_commit',
           title: 'Days since commit',
           searchable: false,
+          sortable: true,
           formatter: (value, row) => {
             if (row.release_delta === undefined)
               return "-"
             return row.release_delta.head_to_now.days
-          }
+          },
+          sorter:  (colA, colB, rowA, rowB) => {
+            return rowA.release_delta.head_to_now.days - rowB.release_delta.head_to_now.days;
+          },
         },
         {
           field: 'days_since_release',
           title: 'Days since release',
           searchable: false,
+          sortable: true,
           formatter: (value, row) => {
             if (row.release_delta === undefined)
               return "-"
             return row.release_delta.tag_to_now.days
-          }
+          },
+          sorter:  (colA, colB, rowA, rowB) => {
+            return rowA.release_delta.tag_to_now.days - rowB.release_delta.tag_to_now.days;
+          },
         },
         {
           field: 'commits_since_release',
           title: 'Commits since release',
           formatter: commitDeltaFormatter,
-          searchable: false
+          sortable: true,
+          searchable: false,
+          sorter:  (colA, colB, rowA, rowB) => {
+            return rowA.release_delta.commit_count - rowB.release_delta.commit_count;
+          },
+        },
+        {
+          field: 'changes_since_release',
+          title: 'Changes since release',
+          formatter: changeDeltaFormatter,
+          sortable: true,
+          searchable: false,
+          sorter:  (colA, colB, rowA, rowB) => {
+            return (rowA.release_delta.shortstat.insertions + rowA.release_delta.shortstat.deletions) -
+                   (rowB.release_delta.shortstat.insertions + rowB.release_delta.shortstat.deletions);
+          },
         },
         {
           field: 'changes_since_release',
