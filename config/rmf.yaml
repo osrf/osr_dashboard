@@ -1,0 +1,10 @@
+distributions:
+  rmf-humble:
+    url: https://raw.githubusercontent.com/open-rmf/rmf/humble/rmf.repos
+    rosdistro_url: https://raw.githubusercontent.com/ros/rosdistro/master/humble/distribution.yaml
+  rmf-iron:
+    url: https://raw.githubusercontent.com/open-rmf/rmf/iron/rmf.repos
+    rosdistro_url: https://raw.githubusercontent.com/ros/rosdistro/master/iron/distribution.yaml
+  rmf-rolling:
+    url: https://raw.githubusercontent.com/open-rmf/rmf/main/rmf.repos
+    rosdistro_url: https://raw.githubusercontent.com/ros/rosdistro/master/rolling/distribution.yaml
