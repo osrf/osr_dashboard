@@ -140,7 +140,7 @@
       return "DETACHED"
     }
 
-    if (row.release_delta.shortstat.files_changed  == 0 &&
+    if (row.release_delta.shortstat.files_changed == 0 &&
         row.release_delta.shortstat.insertions == 0 &&
         row.release_delta.shortstat.deletions == 0
       )
@@ -164,11 +164,17 @@
     name = name.replace('/', '_')
 
     ret = ''
-    ret += '<span>' + row.release_delta.shortstat.files_changed + ' files changed</span><br/>'
+    if (row.release_delta.shortstat.files_changed == 1) {
+      files_changed_text = ' file changed'
+    } else {
+      files_changed_text = ' files changed'
+    }
+
+    ret += '<span>' + row.release_delta.shortstat.files_changed + files_changed_text + '</span><br/>'
     ret += '<span style="color: green">' + row.release_delta.shortstat.insertions+ ' insertions(+)</span><br/>'
     ret += '<span style="color: red">' + row.release_delta.shortstat.deletions+ ' deletions(-)</span>'
 
-ret += '<div class="modal" tabindex="-1" role="dialog" id="modal_' + name + '">' +
+    ret += '<div class="modal" tabindex="-1" role="dialog" id="modal_' + name + '">' +
 '  <div class="modal-dialog modal-lg" role="document">' +
 '    <div class="modal-content">' +
 '      <div class="modal-header">' +

@@ -156,7 +156,7 @@ def compute_repo_stats(repo: Repository, generation_time: datetime.datetime):
                     }
                 )
 
-        match = re.search(r"(\d+) files changed", shortstat)
+        match = re.search(r"(\d+) files? changed", shortstat)
         files_changed = match.groups()[0] if match else 0
 
         match = re.search(r"(\d+) insertions", shortstat)
