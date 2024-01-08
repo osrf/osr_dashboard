@@ -5,3 +5,5 @@ distributions:
     url: https://raw.githubusercontent.com/gazebo-tooling/gazebodistro/master/collection-fortress.yaml
   garden:
     url: https://raw.githubusercontent.com/gazebo-tooling/gazebodistro/master/collection-garden.yaml
+  harmonic:
+    url: https://raw.githubusercontent.com/gazebo-tooling/gazebodistro/master/collection-harmonic.yaml
