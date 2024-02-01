@@ -9,9 +9,9 @@ authors = [
 license = "Apache-2.0"
 readme = "README.md"
 
-documentation = "https://gazebo-tooling.github.io/osr-dashboard"
-homepage = "https://gazebo-tooling.github.io/osr-dashboard"
-repository = "https://github.com/gazebo-tooling/osr-dashboard"
+documentation = "https://osrf.github.io/osr_dashboard/"
+homepage = "https://osrf.github.io/osr_dashboard"
+repository = "https://github.com/osrf/osr_dashboard"
 
 classifiers = [
   "Development Status :: 4 - Beta",
