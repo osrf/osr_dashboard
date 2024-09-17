@@ -7,3 +7,5 @@ distributions:
     url: https://raw.githubusercontent.com/gazebo-tooling/gazebodistro/master/collection-garden.yaml
   harmonic:
     url: https://raw.githubusercontent.com/gazebo-tooling/gazebodistro/master/collection-harmonic.yaml
+  ionic:
+    url: https://raw.githubusercontent.com/gazebo-tooling/gazebodistro/master/collection-ionic.yaml
