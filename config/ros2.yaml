@@ -2,9 +2,6 @@ distributions:
   humble:
     url: https://raw.githubusercontent.com/ros2/ros2/humble/ros2.repos
     rosdistro_url: https://raw.githubusercontent.com/ros/rosdistro/master/humble/distribution.yaml
-  iron:
-    url: https://raw.githubusercontent.com/ros2/ros2/iron/ros2.repos
-    rosdistro_url: https://raw.githubusercontent.com/ros/rosdistro/master/iron/distribution.yaml
   jazzy:
     url: https://raw.githubusercontent.com/ros2/ros2/jazzy/ros2.repos
     rosdistro_url: https://raw.githubusercontent.com/ros/rosdistro/master/jazzy/distribution.yaml

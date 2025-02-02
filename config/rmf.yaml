@@ -2,9 +2,6 @@ distributions:
   rmf-humble:
     url: https://raw.githubusercontent.com/open-rmf/rmf/humble/rmf.repos
     rosdistro_url: https://raw.githubusercontent.com/ros/rosdistro/master/humble/distribution.yaml
-  rmf-iron:
-    url: https://raw.githubusercontent.com/open-rmf/rmf/iron/rmf.repos
-    rosdistro_url: https://raw.githubusercontent.com/ros/rosdistro/master/iron/distribution.yaml
   rmf-jazzy:
     url: https://raw.githubusercontent.com/open-rmf/rmf/jazzy/rmf.repos
     rosdistro_url: https://raw.githubusercontent.com/ros/rosdistro/master/jazzy/distribution.yaml
