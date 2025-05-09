@@ -35,7 +35,7 @@ requests = "*"
 vcstool = "*"
 ghapi = "*"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
 autoflake = "*"
 black = "*"
 flake8 = "*"

@@ -35,11 +35,6 @@ repos:
         entry: poetry run pyupgrade --py37-plus
         language: system
         types: [python]
-      - id: flake8
-        name: flake8
-        entry: poetry run flake8
-        language: system
-        types: [python]
       - id: kacl-verify
         name: kacl-verify
         entry: poetry run kacl-cli verify

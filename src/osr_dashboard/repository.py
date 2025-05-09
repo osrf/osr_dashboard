@@ -103,8 +103,7 @@ class Repository:
         Get the head branch name from the repository
         """
         try:
-            active_branch = self.repo.active_branch
-            return active_branch.name
+            return self.repo.active_branch.name
         except TypeError:
             return None
 
