@@ -5,3 +5,5 @@ distributions:
     url: https://raw.githubusercontent.com/gazebo-tooling/gazebodistro/master/collection-harmonic.yaml
   ionic:
     url: https://raw.githubusercontent.com/gazebo-tooling/gazebodistro/master/collection-ionic.yaml
+  jetty:
+    url: https://raw.githubusercontent.com/gazebo-tooling/gazebodistro/master/collection-jetty.yaml
